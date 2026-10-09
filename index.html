@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>31 Flavors of Love ～甘いスクールライフはパチパチの予感!?～</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Tone.js for Web Audio Synth BGM/SE -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        '31pink': '#ff4d8d',
+                        '31blue': '#00b2e3',
+                        '31mint': '#a2e8dd',
+                        '31choco': '#5c3a21',
+                        '31yellow': '#ffe66d',
+                        '31purple': '#9b59b6',
+                        '31bg': '#fff5f8'
+                    },
+                    fontFamily: {
+                        maru: ['"Zen Maru Gothic"', 'sans-serif'],
+                        pop: ['"Fredoka"', 'cursive', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Zen Maru Gothic', sans-serif;
+            background-color: #2b1b22;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* 31 Theme Decorative Pattern */
+        .pattern-bg {
+            background-color: #ffe8f2;
+            background-image:  radial-gradient(#ff85b3 1.5px, transparent 1.5px), radial-gradient(#00b2e3 1.5px, #ffe8f2 1.5px);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px;
+        }
+
+        /* Glassmorphism Text Window */
+        .textbox-window {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(8px);
+            border: 4px solid #ff4d8d;
+            box-shadow: 0 10px 25px rgba(255, 77, 141, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Custom Buttons */
+        .btn-31 {
+            background: linear-gradient(135deg, #ff4d8d 0%, #ff70a6 100%);
+            box-shadow: 0 6px 0 #c72c65, 0 8px 15px rgba(0,0,0,0.2);
+            transition: all 0.15s ease;
+        }
+        .btn-31:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #c72c65, 0 12px 20px rgba(0,0,0,0.25);
+        }
+        .btn-31:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #c72c65, 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .btn-blue {
+            background: linear-gradient(135deg, #00b2e3 0%, #48c9f0 100%);
+            box-shadow: 0 6px 0 #0081a7, 0 8px 15px rgba(0,0,0,0.2);
+        }
+        .btn-blue:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #0081a7, 0 12px 20px rgba(0,0,0,0.25);
+        }
+        .btn-blue:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #0081a7, 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .btn-mint {
+            background: linear-gradient(135deg, #2ec4b6 0%, #70e4d7 100%);
+            box-shadow: 0 6px 0 #1b8a80, 0 8px 15px rgba(0,0,0,0.2);
+            color: #114b46;
+        }
+
+        /* Popping Particle Animation */
+        @keyframes popping {
+            0% { transform: scale(0) rotate(0deg); opacity: 1; }
+            50% { transform: scale(1.3) rotate(180deg); opacity: 0.8; }
+            100% { transform: scale(0) rotate(360deg); opacity: 0; }
+        }
+        .pop-particle {
+            position: absolute;
+            pointer-events: none;
+            animation: popping 0.8s ease-out forwards;
+        }
+
+        /* Character Bobbing Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #ffe8f2;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ff4d8d;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen text-gray-800">
+
+    <!-- Main Game Container (Aspect Ratio 16:9 target) -->
+    <div id="game-container" class="relative w-full max-w-5xl h-[100vh] sm:h-[90vh] max-h-[720px] bg-slate-900 overflow-hidden sm:rounded-2xl border-0 sm:border-4 border-31pink shadow-2xl flex flex-col justify-between">
+        
+        <!-- Canvas Background Layer -->
+        <div id="bg-layer" class="absolute inset-0 bg-cover bg-center transition-all duration-700 pattern-bg">
+            <div id="bg-overlay" class="absolute inset-0 bg-black/10 transition-opacity duration-500"></div>
+        </div>
+
+        <!-- Particle Overlay Layer -->
+        <div id="particle-layer" class="absolute inset-0 pointer-events-none z-10 overflow-hidden"></div>
+
+        <!-- Character Display Layer -->
+        <div id="character-layer" class="absolute inset-0 flex items-end justify-around px-8 pointer-events-none z-10">
+            <div id="char-left" class="w-1/3 h-full flex items-end justify-center transition-all duration-500 transform translate-y-12 opacity-0"></div>
+            <div id="char-center" class="w-2/5 h-full flex items-end justify-center transition-all duration-500 transform translate-y-12 opacity-0"></div>
+            <div id="char-right" class="w-1/3 h-full flex items-end justify-center transition-all duration-500 transform translate-y-12 opacity-0"></div>
+        </div>
+
+        <!-- Top HUD / Controls Header -->
+        <div class="relative z-30 p-4 flex justify-between items-center bg-gradient-to-b from-black/60 to-transparent">
+            <!-- Game Title Tag -->
+            <div class="flex items-center space-x-2 bg-white/90 backdrop-blur px-4 py-1.5 rounded-full border-2 border-31pink shadow-md">
+                <i class="fa-solid font-pop text-31pink text-xl">31</i>
+                <span class="font-bold text-31pink text-sm sm:text-base tracking-wider">聖サーティワン学園</span>
+            </div>
+
+            <!-- Quick Action Buttons -->
+            <div class="flex items-center space-x-2">
+                <button onclick="toggleAffectionModal()" class="px-3 py-1.5 bg-pink-100 hover:bg-pink-200 text-31pink rounded-full text-xs sm:text-sm font-bold border border-31pink transition shadow flex items-center gap-1">
+                    <i class="fa-solid fa-heart text-red-500"></i> 好感度
+                </button>
+                <button onclick="openLogModal()" class="px-3 py-1.5 bg-white/80 hover:bg-white text-gray-700 rounded-full text-xs sm:text-sm font-bold border border-gray-300 transition shadow">
+                    <i class="fa-solid fa-list-ul"></i> ログ
+                </button>
+                <button id="auto-btn" onclick="toggleAuto()" class="px-3 py-1.5 bg-white/80 hover:bg-white text-gray-700 rounded-full text-xs sm:text-sm font-bold border border-gray-300 transition shadow">
+                    <i class="fa-solid fa-play"></i> AUTO
+                </button>
+                <button id="skip-btn" onclick="toggleSkip()" class="px-3 py-1.5 bg-white/80 hover:bg-white text-gray-700 rounded-full text-xs sm:text-sm font-bold border border-gray-300 transition shadow">
+                    <i class="fa-solid fa-forward"></i> SKIP
+                </button>
+                <button onclick="openSaveModal()" class="px-3 py-1.5 bg-31blue hover:bg-cyan-600 text-white rounded-full text-xs sm:text-sm font-bold shadow transition">
+                    <i class="fa-solid fa-floppy-disk"></i> セーブ/ロード
+                </button>
+                <button onclick="toggleAudio()" id="audio-btn" class="w-8 h-8 sm:w-9 sm:h-9 bg-white/80 hover:bg-white text-gray-700 rounded-full text-xs sm:text-sm font-bold border border-gray-300 transition shadow flex items-center justify-center">
+                    <i class="fa-solid fa-volume-high"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Center Choices Overlay Container -->
+        <div id="choices-container" class="absolute inset-0 z-40 flex flex-col items-center justify-center gap-4 bg-black/40 backdrop-blur-sm p-6 hidden">
+            <h3 id="choice-title" class="text-white text-xl sm:text-2xl font-bold mb-2 drop-shadow-md bg-31pink px-6 py-2 rounded-full border-2 border-white">
+                どうしよう……？
+            </h3>
+            <div id="choice-buttons" class="flex flex-col gap-3 w-full max-w-lg">
+                <!-- Choice buttons injected dynamically -->
+            </div>
+        </div>
+
+        <!-- Main Novel Dialogue Box Layer -->
+        <div id="dialogue-box-wrapper" class="relative z-30 p-4 sm:p-6 transition-all duration-300">
+            <div class="textbox-window rounded-3xl p-4 sm:p-6 relative cursor-pointer min-h-[140px] sm:min-h-[180px] flex flex-col justify-between" onclick="handleDialogueClick()">
+                
+                <!-- Character Name Tag -->
+                <div id="speaker-tag" class="absolute -top-5 left-6 bg-gradient-to-r from-31pink to-pink-500 text-white font-bold text-base sm:text-lg px-6 py-1 rounded-full border-2 border-white shadow-md flex items-center gap-2">
+                    <i class="fa-solid fa-ice-cream text-yellow-200"></i>
+                    <span id="speaker-name">彩葉</span>
+                </div>
+
+                <!-- Dialogue Content -->
+                <div class="mt-2 text-gray-800 text-base sm:text-lg leading-relaxed font-bold tracking-wide" id="dialogue-text">
+                    ここにセリフが表示されます。
+                </div>
+
+                <!-- Next Indicator Marker -->
+                <div class="self-end flex items-center text-31pink animate-bounce font-bold text-sm sm:text-base gap-1">
+                    <span>NEXT</span>
+                    <i class="fa-solid fa-caret-down text-lg"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Title Screen Layer -->
+        <div id="title-screen" class="absolute inset-0 z-50 bg-gradient-to-br from-pink-100 via-sky-100 to-amber-100 flex flex-col items-center justify-between p-8 text-center">
+            <div class="my-auto flex flex-col items-center">
+                <!-- Main Title Logo -->
+                <div class="relative mb-6">
+                    <span class="font-pop text-6xl sm:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-31pink via-purple-500 to-31blue drop-shadow-lg inline-block transform -rotate-3">
+                        31 Flavors
+                    </span>
+                    <div class="text-3xl sm:text-5xl font-black text-31pink tracking-widest mt-1 border-b-4 border-31pink pb-2 drop-shadow">
+                        of Love
+                    </div>
+                    <p class="text-xs sm:text-sm font-bold text-31choco mt-2 bg-white/80 px-4 py-1 rounded-full shadow-inner border border-pink-200">
+                        ～甘いスクールライフはパチパチの予感!?～
+                    </p>
+                </div>
+
+                <p class="text-sm sm:text-base font-bold text-gray-700 max-w-md mb-8 bg-white/70 p-4 rounded-2xl border border-pink-200 shadow-sm">
+                    アイスクリーム店舗を模した全寮制「私立サーティワン学園」。<br>
+                    男子禁制の学園に特別研究者として潜入した主人公の運命は……!?
+                </p>
+
+                <!-- Start Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 w-full max-w-xs sm:max-w-md">
+                    <button onclick="startGame()" class="btn-31 w-full py-4 text-white font-bold text-xl rounded-full tracking-wider flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-play"></i> ゲームをはじめる
+                    </button>
+                    <button onclick="openSaveModal(true)" class="btn-blue w-full py-4 text-white font-bold text-lg rounded-full tracking-wider flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-folder-open"></i> つづきから
+                    </button>
+                </div>
+            </div>
+
+            <div class="text-xs text-gray-500 font-bold">
+                ※この作品はサーティワンをインスパイアした二次創作パロディギャルゲーです。
+            </div>
+        </div>
+
+        <!-- Ending Screen Modal -->
+        <div id="ending-screen" class="absolute inset-0 z-50 bg-black/90 text-white flex flex-col items-center justify-center p-6 text-center hidden">
+            <div id="ending-card" class="bg-gradient-to-b from-gray-800 to-gray-900 border-4 border-31pink rounded-3xl p-8 max-w-xl w-full shadow-2xl flex flex-col items-center transform scale-95 transition-all">
+                <span id="ending-badge" class="px-4 py-1 bg-31pink text-white font-black rounded-full text-xs sm:text-sm mb-3">
+                    HAPPY ENDING
+                </span>
+                <h2 id="ending-title" class="text-2xl sm:text-4xl font-black text-yellow-300 mb-4">
+                    弾ける未来とサーティワン！
+                </h2>
+                <div id="ending-illustration" class="w-32 h-32 my-2 flex items-center justify-center text-6xl text-31pink">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <p id="ending-desc" class="text-sm sm:text-base text-gray-200 mb-6 leading-relaxed">
+                    エンディング説明テキストがここに入ります。
+                </p>
+                <button onclick="returnToTitle()" class="btn-31 px-8 py-3 text-white font-bold text-lg rounded-full">
+                    タイトル画面へ戻る
+                </button>
+            </div>
+        </div>
+
+        <!-- Affection Status Modal -->
+        <div id="affection-modal" class="absolute inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+            <div class="bg-white border-4 border-31pink rounded-3xl p-6 max-w-md w-full shadow-2xl relative">
+                <button onclick="toggleAffectionModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <h3 class="text-xl font-bold text-31pink text-center mb-4 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-heart"></i> ヒロイン好感度ステータス
+                </h3>
+                <div id="affection-list" class="flex flex-col gap-4">
+                    <!-- Dynamic status list -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Log Modal -->
+        <div id="log-modal" class="absolute inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+            <div class="bg-white border-4 border-31blue rounded-3xl p-6 max-w-lg w-full h-[70vh] flex flex-col shadow-2xl relative">
+                <button onclick="closeLogModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <h3 class="text-xl font-bold text-31blue text-center mb-4 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-list-ul"></i> バックログ
+                </h3>
+                <div id="log-content" class="flex-1 overflow-y-auto space-y-3 pr-2 text-sm sm:text-base">
+                    <!-- Log lines injected dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Save/Load Modal -->
+        <div id="saveload-modal" class="absolute inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+            <div class="bg-white border-4 border-31purple rounded-3xl p-6 max-w-lg w-full shadow-2xl relative">
+                <button onclick="closeSaveModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <h3 id="saveload-title" class="text-xl font-bold text-31purple text-center mb-4">
+                    セーブ / ロード
+                </h3>
+                <div id="save-slots" class="grid grid-cols-1 gap-3">
+                    <!-- Slots injected dynamically -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        /* --------------------------------------------------
+           AUDIO ENGINE (Tone.js / Web Audio API)
+           -------------------------------------------------- */
+        let audioEnabled = false;
+        let bgmSynth = null;
+        let seSynth = null;
+
+        function initAudio() {
+            if (audioEnabled) return;
+            Tone.start();
+            audioEnabled = true;
+
+            seSynth = new Tone.PolySynth(Tone.Synth, {
+                oscillator: { type: "triangle" },
+                envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 }
+            }).toDestination();
+
+            bgmSynth = new Tone.PolySynth(Tone.Synth, {
+                oscillator: { type: "sine" },
+                envelope: { attack: 0.05, decay: 0.2, sustain: 0.3, release: 0.8 }
+            }).toDestination();
+            bgmSynth.volume.value = -12;
+
+            startPopBGM();
+        }
+
+        function toggleAudio() {
+            if (!audioEnabled) {
+                initAudio();
+                document.getElementById('audio-btn').innerHTML = '<i class="fa-solid fa-volume-high text-31pink"></i>';
+            } else {
+                Tone.Transport.stop();
+                audioEnabled = false;
+                document.getElementById('audio-btn').innerHTML = '<i class="fa-solid fa-volume-xmark text-gray-400"></i>';
+            }
+        }
+
+        function playSE(type) {
+            if (!audioEnabled || !seSynth) return;
+            if (type === 'click') seSynth.triggerAttackRelease(["C5"], "8n");
+            if (type === 'pop') seSynth.triggerAttackRelease(["E5", "G5"], "16n");
+            if (type === 'heart') seSynth.triggerAttackRelease(["C5", "E5", "G5", "B5"], "16n");
+            if (type === 'bad') seSynth.triggerAttackRelease(["C3", "C#3"], "8n");
+        }
+
+        function startPopBGM() {
+            if (!audioEnabled) return;
+            Tone.Transport.stop();
+            Tone.Transport.cancel();
+
+            const notes = ["C4", "E4", "G4", "B4", "C5", "G4", "E4", "G4"];
+            let step = 0;
+
+            Tone.Transport.scheduleRepeat((time) => {
+                let note = notes[step % notes.length];
+                bgmSynth.triggerAttackRelease(note, "8n", time);
+                step++;
+            }, "8n");
+
+            Tone.Transport.bpm.value = 135;
+            Tone.Transport.start();
+        }
+
+        /* --------------------------------------------------
+           CHARACTER DATA & SVG GENERATOR
+           -------------------------------------------------- */
+        const CHARACTERS = {
+            iroha: {
+                name: "ポッピング彩葉",
+                title: "弾ける元気娘 (ポッピングシャワー)",
+                color: "#ff4d8d",
+                bg: "#a2e8dd",
+                icon: "fa-bolt",
+                getSvg: (expr) => `
+                    <svg viewBox="0 0 200 300" class="w-full h-full max-h-[480px] drop-shadow-xl animate-float">
+                        <!-- Hair Back -->
+                        <path d="M 40 100 Q 10 180 30 260 L 170 260 Q 190 180 160 100 Z" fill="#70e4d7"/>
+                        <circle cx="50" cy="180" r="15" fill="#ff70a6"/>
+                        <circle cx="150" cy="190" r="12" fill="#ffe66d"/>
+                        <!-- Body / Uniform -->
+                        <path d="M 60 180 L 140 180 L 150 300 L 50 300 Z" fill="#ffffff"/>
+                        <path d="M 60 180 L 100 230 L 140 180 Z" fill="#ff4d8d"/>
+                        <path d="M 85 200 L 115 200 L 100 220 Z" fill="#00b2e3"/>
+                        <!-- Head -->
+                        <ellipse cx="100" cy="120" rx="45" ry="40" fill="#fff0e6"/>
+                        <!-- Hair Front -->
+                        <path d="M 50 110 Q 100 60 150 110 Q 120 80 100 100 Q 80 80 50 110 Z" fill="#70e4d7"/>
+                        <!-- Ribbon -->
+                        <path d="M 45 75 L 65 65 L 55 85 Z" fill="#ff4d8d"/>
+                        <path d="M 155 75 L 135 65 L 145 85 Z" fill="#ff4d8d"/>
+                        <circle cx="100" cy="65" r="8" fill="#ffe66d"/>
+                        <!-- Face Expressions -->
+                        ${expr === 'happy' ? `
+                            <path d="M 75 115 Q 85 105 95 115" stroke="#333" stroke-width="4" fill="none" stroke-linecap="round"/>
+                            <path d="M 105 115 Q 115 105 125 115" stroke="#333" stroke-width="4" fill="none" stroke-linecap="round"/>
+                            <path d="M 85 135 Q 100 155 115 135 Z" fill="#ff4d8d"/>
+                        ` : expr === 'blush' ? `
+                            <circle cx="85" cy="115" r="5" fill="#333"/>
+                            <circle cx="115" cy="115" r="5" fill="#333"/>
+                            <ellipse cx="75" cy="125" rx="8" ry="4" fill="#ff70a6" opacity="0.6"/>
+                            <ellipse cx="125" cy="125" rx="8" ry="4" fill="#ff70a6" opacity="0.6"/>
+                            <path d="M 90 138 Q 100 130 110 138" stroke="#333" stroke-width="3" fill="none"/>
+                        ` : `
+                            <!-- Normal -->
+                            <circle cx="85" cy="115" r="6" fill="#00b2e3"/>
+                            <circle cx="115" cy="115" r="6" fill="#00b2e3"/>
+                            <path d="M 90 135 Q 100 145 110 135" stroke="#333" stroke-width="3" fill="none"/>
+                        `}
+                    </svg>
+                `
+            },
+            aine: {
+                name: "愛音・ハート",
+                title: "小悪魔ツンデレ (ラブポーションサーティワン)",
+                color: "#ff3385",
+                bg: "#ffd1dc",
+                icon: "fa-heart",
+                getSvg: (expr) => `
+                    <svg viewBox="0 0 200 300" class="w-full h-full max-h-[480px] drop-shadow-xl animate-float">
+                        <!-- Hair Back -->
+                        <path d="M 35 90 Q 5 190 25 280 L 175 280 Q 195 190 165 90 Z" fill="#ff3385"/>
+                        <!-- Body / Uniform -->
+                        <path d="M 60 180 L 140 180 L 150 300 L 50 300 Z" fill="#ffffff"/>
+                        <path d="M 70 180 L 100 220 L 130 180 Z" fill="#5c3a21"/>
+                        <path d="M 90 190 L 110 190 L 100 205 Z" fill="#ff3385"/>
+                        <!-- Head -->
+                        <ellipse cx="100" cy="120" rx="43" ry="38" fill="#fff0e6"/>
+                        <!-- Hair Front Twin Tails -->
+                        <path d="M 45 110 Q 100 70 155 110 Q 130 85 100 100 Q 70 85 45 110 Z" fill="#ff66a3"/>
+                        <!-- Heart Hairclip -->
+                        <path d="M 140 80 A 6 6 0 0 0 130 80 A 6 6 0 0 0 120 80 Q 120 90 130 98 Q 140 90 140 80 Z" fill="#5c3a21"/>
+                        <!-- Face Expressions -->
+                        ${expr === 'angry' ? `
+                            <path d="M 75 108 L 90 115" stroke="#333" stroke-width="3"/>
+                            <path d="M 125 108 L 110 115" stroke="#333" stroke-width="3"/>
+                            <circle cx="83" cy="118" r="5" fill="#5c3a21"/>
+                            <circle cx="117" cy="118" r="5" fill="#5c3a21"/>
+                            <path d="M 90 140 Q 100 130 110 140" stroke="#333" stroke-width="3" fill="none"/>
+                        ` : expr === 'blush' ? `
+                            <circle cx="83" cy="115" r="5" fill="#5c3a21"/>
+                            <circle cx="117" cy="115" r="5" fill="#5c3a21"/>
+                            <ellipse cx="73" cy="123" rx="10" ry="5" fill="#ff3385" opacity="0.7"/>
+                            <ellipse cx="127" cy="123" rx="10" ry="5" fill="#ff3385" opacity="0.7"/>
+                            <path d="M 92 135 Q 100 142 108 135" stroke="#333" stroke-width="3" fill="none"/>
+                        ` : `
+                            <!-- Normal Wicked Smile -->
+                            <circle cx="83" cy="115" r="5" fill="#ff3385"/>
+                            <circle cx="117" cy="115" r="5" fill="#ff3385"/>
+                            <path d="M 88 135 Q 105 145 112 132" stroke="#333" stroke-width="3" fill="none"/>
+                        `}
+                    </svg>
+                `
+            },
+            choko: {
+                name: "巧可・ミント",
+                title: "クール風紀委員長 (チョコミント)",
+                color: "#1b8a80",
+                bg: "#a2e8dd",
+                icon: "fa-leaf",
+                getSvg: (expr) => `
+                    <svg viewBox="0 0 200 300" class="w-full h-full max-h-[480px] drop-shadow-xl animate-float">
+                        <!-- Hair Back -->
+                        <path d="M 50 100 L 40 270 L 160 270 L 150 100 Z" fill="#3d2314"/>
+                        <!-- Body / Uniform -->
+                        <path d="M 60 180 L 140 180 L 150 300 L 50 300 Z" fill="#ffffff"/>
+                        <path d="M 60 180 L 100 230 L 140 180 Z" fill="#2ec4b6"/>
+                        <!-- Glasses Ribbon -->
+                        <path d="M 85 200 L 115 200 L 100 220 Z" fill="#3d2314"/>
+                        <!-- Head -->
+                        <ellipse cx="100" cy="120" rx="42" ry="38" fill="#fff0e6"/>
+                        <!-- Glasses -->
+                        <rect x="70" y="108" width="22" height="14" rx="3" fill="none" stroke="#222" stroke-width="2"/>
+                        <rect x="108" y="108" width="22" height="14" rx="3" fill="none" stroke="#222" stroke-width="2"/>
+                        <line x1="92" y1="115" x2="108" y2="115" stroke="#222" stroke-width="2"/>
+                        <!-- Hair Front Short Bob -->
+                        <path d="M 50 105 Q 100 75 150 105 L 145 130 Q 100 110 55 130 Z" fill="#70e4d7"/>
+                        <!-- Face Expressions -->
+                        ${expr === 'surprised' ? `
+                            <circle cx="81" cy="115" r="4" fill="#333"/>
+                            <circle cx="119" cy="115" r="4" fill="#333"/>
+                            <ellipse cx="100" cy="135" rx="5" ry="7" fill="#333"/>
+                        ` : expr === 'smile' ? `
+                            <path d="M 75 115 Q 81 110 87 115" stroke="#333" stroke-width="2.5" fill="none"/>
+                            <path d="M 113 115 Q 119 110 125 115" stroke="#333" stroke-width="2.5" fill="none"/>
+                            <path d="M 90 135 Q 100 143 110 135" stroke="#333" stroke-width="3" fill="none"/>
+                        ` : `
+                            <!-- Cool Normal -->
+                            <circle cx="81" cy="115" r="4" fill="#333"/>
+                            <circle cx="119" cy="115" r="4" fill="#333"/>
+                            <line x1="90" y1="135" x2="110" y2="135" stroke="#333" stroke-width="3"/>
+                        `}
+                    </svg>
+                `
+            },
+            ichika: {
+                name: "苺華・ストロベリー",
+                title: "甘酸っぱい王道お嬢様 (ベリーベリーストロベリー)",
+                color: "#e63946",
+                bg: "#ffccd5",
+                icon: "fa-strawberry",
+                getSvg: (expr) => `
+                    <svg viewBox="0 0 200 300" class="w-full h-full max-h-[480px] drop-shadow-xl animate-float">
+                        <!-- Hair Long Soft Waves -->
+                        <path d="M 30 100 Q 0 200 40 280 L 160 280 Q 200 200 170 100 Z" fill="#ff85a1"/>
+                        <!-- Body / Uniform -->
+                        <path d="M 60 180 L 140 180 L 150 300 L 50 300 Z" fill="#ffffff"/>
+                        <path d="M 65 180 L 100 210 L 135 180 Z" fill="#ff4d6d"/>
+                        <!-- Head -->
+                        <ellipse cx="100" cy="120" rx="44" ry="39" fill="#fff0e6"/>
+                        <!-- Hair Front -->
+                        <path d="M 45 105 Q 100 65 155 105 Q 125 90 100 105 Q 75 90 45 105 Z" fill="#ffb3c1"/>
+                        <!-- Strawberry Hair Accessory -->
+                        <path d="M 135 75 Q 145 65 155 75 Q 150 90 145 90 Z" fill="#e63946"/>
+                        <path d="M 142 65 L 148 65 L 145 70 Z" fill="#2a9d8f"/>
+                        <!-- Face Expressions -->
+                        ${expr === 'happy' ? `
+                            <path d="M 75 115 Q 83 105 91 115" stroke="#333" stroke-width="3" fill="none"/>
+                            <path d="M 109 115 Q 117 105 125 115" stroke="#333" stroke-width="3" fill="none"/>
+                            <path d="M 88 132 Q 100 150 112 132 Z" fill="#e63946"/>
+                        ` : `
+                            <!-- Gentle Smile -->
+                            <circle cx="83" cy="115" r="5" fill="#9e2a2b"/>
+                            <circle cx="117" cy="115" r="5" fill="#9e2a2b"/>
+                            <ellipse cx="73" cy="122" rx="6" ry="3" fill="#ff4d6d" opacity="0.5"/>
+                            <ellipse cx="127" cy="122" rx="6" ry="3" fill="#ff4d6d" opacity="0.5"/>
+                            <path d="M 90 135 Q 100 142 110 135" stroke="#333" stroke-width="2.5" fill="none"/>
+                        `}
+                    </svg>
+                `
+            }
+        };
+
+        /* --------------------------------------------------
+           SCENARIO & BRANCHING DATA (EXTENDED STORY & MULTIPLE CHOICES)
+           -------------------------------------------------- */
+        const SCENARIO = {
+            start: [
+                { bg: "pattern-bg", speaker: "？？？", text: "「おい！起きろ！今日からお前の潜入ミッションが始まるんだぞ！」", sound: "pop" },
+                { speaker: "主人公", text: "「う、うーん……ここは……？ 男子禁制の噂の学園……？」" },
+                { bg: "pattern-bg", speaker: "ナレーション", text: "学園の名は『私立サーティワン学園』。世界中のアイスクリームフレーバーの精霊たちが集う、ポップでスウィートな乙女の花園である。" },
+                { speaker: "ナレーション", text: "主人公は『伝説の限定フレーバー試作研究員』として、正体を隠してこの学園に潜入することになったのだ！" },
+                {
+                    speaker: "彩葉",
+                    char: { pos: "center", id: "iroha", expr: "happy" },
+                    text: "「おはよーっ！転校生くん！……あ、じゃなくて『特別研究生』さん！あたしポッピング彩葉！学園を案内してあげるね！」",
+                    sound: "heart"
+                },
+                {
+                    speaker: "彩葉",
+                    char: { pos: "center", id: "iroha", expr: "normal" },
+                    text: "「さあ、まずはどの部活・エリアから見学してみる？最初に出会う女の子で、あなたの学園生活が大きく変わりそう！」",
+                    choices: [
+                        { text: "① スウィーツ開発部（ポッピング彩葉）", next: "iroha_step1", affinity: { iroha: 10 } },
+                        { text: "② 恋愛心理学研究会（愛音・ハート）", next: "aine_step1", affinity: { aine: 10 } },
+                        { text: "③ 学園風紀委員会（巧可・ミント）", next: "choko_step1", affinity: { choko: 10 } },
+                        { text: "④ お茶会サロン（苺華・ストロベリー）", next: "ichika_step1", affinity: { ichika: 10 } }
+                    ]
+                }
+            ],
+
+            // ==================================================
+            // --- ROUTE: IROHA (ポッピング彩葉) --- 3-STEP ACQUAINTANCE
+            // ==================================================
+            iroha_step1: [
+                {
+                    speaker: "彩葉",
+                    char: { pos: "center", id: "iroha", expr: "happy" },
+                    text: "「やったー！スウィーツ開発部へようこそ！ここでは毎日新しいパチパチキャンディの配合を試してるんだ！」"
+                },
+                {
+                    speaker: "彩葉",
+                    char: { pos: "center", id: "iroha", expr: "normal" },
+                    text: "「ねえねえ、さっそく試作品の炭酸ポップアイスを食べてみて！お口の中で弾ける感覚……どうかな？」",
+                    choices: [
+                        { text: "「最高にパチパチして元気が出る味だね！」", next: "iroha_1_good", affinity: { iroha: 15 } },
+                        { text: "「ちょっと刺激が強すぎて舌がビリビリするかも…」", next: "iroha_1_bad", affinity: { iroha: -5 } }
+                    ]
+                }
+            ],
+            iroha_1_good: [
+                {
+                    speaker: "彩葉",
+                    char: { pos: "center", id: "iroha", expr: "happy" },
+                    text: "「本当！？わ〜い！この弾けるシュワシュワ感をわかってくれるなんて、君とは最高の相性かも！」", sound: "heart" },
+                { next: "iroha_step2" }
+            ],
+            iroha_1_bad: [
+                {
+                    speaker: "彩葉",
+                    char: { pos: "center", id: "iroha", expr: "blush" },
+                    text: "「うぅ…そっかぁ。やっぱりキャンディの粒が大きすぎたかなぁ…でも諦めないぞ！」" },
+                { next: "iroha_step2" }
+            ],
+
+            iroha_step2: [
+                {
+                    speaker: "彩葉",
+                    char: { pos: "center", id: "iroha", expr: "normal" },
+                    text: "「数日後――放課後、彩葉と一緒に次のフレーバーの色合いについて相談することになった。」"
+                },
+                {
+                    speaker: "彩葉",
+                    char: { pos: "center", id: "iroha", expr: "blush" },
+                    text: "「ポップなミントグリーンとソーダブルー、どっちをベースにするか迷ってるんだよね。君はあたしにどんな色が似合うと思う…？」",
+                    choices: [
+                        { text: "「彩葉の明るい笑顔には爽やかなミントグリーンがぴったり！」", next: "iroha_2_good", affinity: { iroha: 15 } },
+                        { text: "「クールなソーダブルーでギャップを狙うのもいいかも」", next: "iroha_2_normal", affinity: { iroha: 5 } }
+                    ]
+                }
+            ],
+            iroha_2_good: [
+                {
+                    speaker: "彩葉",
+                    char: { pos: "center", id: "iroha", expr: "blush" },
+                    text: "「あ、あたしの笑顔……！？照れるなぁ。でも君がそう言ってくれるなら、ミントグリーンで決まりだね！」", sound: "heart" },
+                { next: "iroha_step3" }
+            ],
+            iroha_2_normal: [
+                {
+                    speaker: "彩葉",
+                    char: { pos: "center", id: "iroha", expr: "happy" },
+                    text: "「ギャップ萌え！？なるほど〜、そういう視点も研究員らしくていいね！」" },
+                { next: "iroha_step3" }
+            ],
+
+            iroha_step3: [
+                {
+                    speaker: "彩葉",
+                    char: { pos: "center", id: "iroha", expr: "happy" },
+                    text: "「学園祭の前日、二人は試作部屋で遅くまで作業を続けていた。」"
+                },
+                {
+                    speaker: "彩葉",
+                    char: { pos: "center", id: "iroha", expr: "blush" },
+                    text: "「ねえ……君が特別研究生としてうちの学園に来てくれて、あたし本当に毎日がパチパチ弾けるくらい楽しいんだ。学園祭が終わっても、ずっと隣にいてくれる……？」",
+                    choices: [
+                        { text: "「もちろんだよ！彩葉と過ごす時間が一番弾けて楽しいから」", next: "iroha_3_good", affinity: { iroha: 20 } },
+                        { text: "「研究員としての任務が終わるまでは、ね」", next: "iroha_3_bad", affinity: { iroha: 0 } }
+                    ]
+                }
+            ],
+            iroha_3_good: [
+                {
+                    speaker: "彩葉",
+                    char: { pos: "center", id: "iroha", expr: "blush" },
+                    text: "「やったあぁっ！約束だよ！？あたしの心の中のパチパチ、もう止まらないんだから……！」", sound: "heart" },
+                { text: "彩葉との絆が最高潮に達した！二人は笑顔で手を重ね合わせた。", next: "festival_prep" }
+            ],
+            iroha_3_bad: [
+                {
+                    speaker: "彩葉",
+                    char: { pos: "center", id: "iroha", expr: "normal" },
+                    text: "「んもう、真面目なんだから！でも、任務が終わっても離さないんだからね！」" },
+                { text: "彩葉との仲を深めつつ、学園祭当日を迎えるのだった。", next: "festival_prep" }
+            ],
+
+            // ==================================================
+            // --- ROUTE: AINE (愛音・ハート) --- 3-STEP ACQUAINTANCE
+            // ==================================================
+            aine_step1: [
+                {
+                    speaker: "愛音",
+                    char: { pos: "center", id: "aine", expr: "normal" },
+                    text: "「あら？あなたが噂の特別研究生？フン、愛音・ハート様の前に気安く立たないでくださる？」"
+                },
+                {
+                    speaker: "愛音",
+                    char: { pos: "center", id: "aine", expr: "angry" },
+                    text: "「このラブポーション・ラズベリーフレーバーの深みと甘酸っぱさを理解できない野蛮人はお断りよ！…で、あなたはどうなのよ？」",
+                    choices: [
+                        { text: "「甘酸っぱくて、どこか素直になれない君みたいで実に魅力的だ」", next: "aine_1_good", affinity: { aine: 15 } },
+                        { text: "「初対面なのに、ちょっとツンツンしすぎじゃない？」", next: "aine_1_bad", affinity: { aine: -5 } }
+                    ]
+                }
+            ],
+            aine_1_good: [
+                {
+                    speaker: "愛音",
+                    char: { pos: "center", id: "aine", expr: "blush" },
+                    text: "「なっ、ナニ言ってるのよバカ！！……べ、別に褒められたって嬉しくなんてないんだからねッ！」", sound: "heart" },
+                { next: "aine_step2" }
+            ],
+            aine_1_bad: [
+                {
+                    speaker: "愛音",
+                    char: { pos: "center", id: "aine", expr: "angry" },
+                    text: "「なんですって！？失礼なヤツ！フンッ、第一印象は最悪ね！」", sound: "bad" },
+                { next: "aine_step2" }
+            ],
+
+            aine_step2: [
+                {
+                    speaker: "愛音",
+                    char: { pos: "center", id: "aine", expr: "normal" },
+                    text: "「数日後――放課後、部室で一人で悩んでいる愛音を見かけた。」"
+                },
+                {
+                    speaker: "愛音",
+                    char: { pos: "center", id: "aine", expr: "blush" },
+                    text: "「うぅ…ハート型のチョコトッピング、もっと可愛く配置したいのにうまくいかないわ……あ、いつからそこにいたのよ！？見ないでよ！」",
+                    choices: [
+                        { text: "「手伝うよ。愛音のこだわりが詰まった素敵なアイスにしたいし」", next: "aine_2_good", affinity: { aine: 15 } },
+                        { text: "「へえ、案外細かいところで悩んでるんだね」", next: "aine_2_normal", affinity: { aine: 5 } }
+                    ]
+                }
+            ],
+            aine_2_good: [
+                {
+                    speaker: "愛音",
+                    char: { pos: "center", id: "aine", expr: "blush" },
+                    text: "「手伝うって……べ、別にあなたなんかに助けてもらわなくても……うう、じゃあ少しだけ教えてあげてもいいわよ！」", sound: "heart" },
+                { next: "aine_step3" }
+            ],
+            aine_2_normal: [
+                {
+                    speaker: "愛音",
+                    char: { pos: "center", id: "aine", expr: "angry" },
+                    text: "「うるさいわね！完璧を目指すのが愛音様の流儀なの！」" },
+                { next: "aine_step3" }
+            ],
+
+            aine_step3: [
+                {
+                    speaker: "愛音",
+                    char: { pos: "center", id: "aine", expr: "blush" },
+                    text: "「学園祭前夜。完成したラブポーションフレーバーを二人で試食することに。」"
+                },
+                {
+                    speaker: "愛音",
+                    char: { pos: "center", id: "aine", expr: "blush" },
+                    text: "「……ねえ。このアイス、『惚れ薬』って意味があるの……知ってるでしょ？あなた、私にどんな薬をかけたつもり……？」",
+                    choices: [
+                        { text: "「惚れ薬がかかったのは俺の方だよ、愛音に夢中なんだ」", next: "aine_3_good", affinity: { aine: 20 } },
+                        { text: "「ただの美味しさの魔法だよ」", next: "aine_3_bad", affinity: { aine: 0 } }
+                    ]
+                }
+            ],
+            aine_3_good: [
+                {
+                    speaker: "愛音",
+                    char: { pos: "center", id: "aine", expr: "blush" },
+                    text: "「～～～っ！？バカ！本当のバカ！そんなストレートに言われたら……反論できないじゃない……///」", sound: "heart" },
+                { text: "ツンデレな愛音の顔が完全に林檎のように真っ赤になった！", next: "festival_prep" }
+            ],
+            aine_3_bad: [
+                {
+                    speaker: "愛音",
+                    char: { pos: "center", id: "aine", expr: "normal" },
+                    text: "「ふ、ふん！まあ研究員としては合格の回答ね！」" },
+                { text: "素直になれない愛音だったが、確実に絆は深まっていた。", next: "festival_prep" }
+            ],
+
+            // ==================================================
+            // --- ROUTE: CHOKO (巧可・ミント) --- 3-STEP ACQUAINTANCE
+            // ==================================================
+            choko_step1: [
+                {
+                    speaker: "巧可",
+                    char: { pos: "center", id: "choko", expr: "normal" },
+                    text: "「校内での無許可の単独行動は慎んでいただきたい。私は風紀委員長の巧可・ミントです。」"
+                },
+                {
+                    speaker: "巧可",
+                    char: { pos: "center", id: "choko", expr: "surprised" },
+                    text: "「……あ、あの、私のポケットからチラ見えしているチョコの袋には触れないでください。これは査察目的の備品です。」",
+                    choices: [
+                        { text: "「チョコミントの爽やかさとチョコの甘さは最高の組み合わせだよね」", next: "choko_1_good", affinity: { choko: 15 } },
+                        { text: "「風紀委員長がこっそり買い食いですか？」", next: "choko_1_bad", affinity: { choko: -5 } }
+                    ]
+                }
+            ],
+            choko_1_good: [
+                {
+                    speaker: "巧可",
+                    char: { pos: "center", id: "choko", expr: "smile" },
+                    text: "「……！ あなた、チョコミントの真の爽快感と甘みの黄金比が分かるのですね。見直しました。」", sound: "heart" },
+                { next: "choko_step2" }
+            ],
+            choko_1_bad: [
+                {
+                    speaker: "巧可",
+                    char: { pos: "center", id: "choko", expr: "surprised" },
+                    text: "「っ！ こ、これは厳密には『味覚取締査察』であって私腹を肥やす買い食いでは……っ！」", sound: "bad" },
+                { next: "choko_step2" }
+            ],
+
+            choko_step2: [
+                {
+                    speaker: "巧可",
+                    char: { pos: "center", id: "choko", expr: "normal" },
+                    text: "「数日後――図書室で風紀委員の書類を整理している巧可と遭遇した。」"
+                },
+                {
+                    speaker: "巧可",
+                    char: { pos: "center", id: "choko", expr: "normal" },
+                    text: "「ふぅ……学園祭の警備計画の作成で少し目が疲れました。……何か清涼感のある息抜き方法はありませんか？」",
+                    choices: [
+                        { text: "「冷たいミントティーを淹れてきたよ、一緒に休もう」", next: "choko_2_good", affinity: { choko: 15 } },
+                        { text: "「メガネを外して目元をマッサージしてみたら？」", next: "choko_2_normal", affinity: { choko: 5 } }
+                    ]
+                }
+            ],
+            choko_2_good: [
+                {
+                    speaker: "巧可",
+                    char: { pos: "center", id: "choko", expr: "smile" },
+                    text: "「素晴らしいお気遣いです……！ ミントの香りで頭が非常にすっきりします。あなたといると心が安らぎますね。」", sound: "heart" },
+                { next: "choko_step3" }
+            ],
+            choko_2_normal: [
+                {
+                    speaker: "巧可",
+                    char: { pos: "center", id: "choko", expr: "surprised" },
+                    text: "「メ、メガネを外すのですか！？少し恥ずかしいですが……あなただけにしか見せませんよ。」" },
+                { next: "choko_step3" }
+            ],
+
+            choko_step3: [
+                {
+                    speaker: "巧可",
+                    char: { pos: "center", id: "choko", expr: "normal" },
+                    text: "「学園祭前夜。巧可は誰もいない執務室で、小さなチョコミントアイスを二つ並べて待っていた。」"
+                },
+                {
+                    speaker: "巧可",
+                    char: { pos: "center", id: "choko", expr: "smile" },
+                    text: "「風紀委員長としてではなく、ただの女子生徒として……あなたとこの特別なフレーバーを味わいたいのです。私の『特別な人』になっていただけますか？」",
+                    choices: [
+                        { text: "「喜んで！巧可の1番の理解者でありたい」", next: "choko_3_good", affinity: { choko: 20 } },
+                        { text: "「風紀違反にならない範囲でなら！」", next: "choko_3_bad", affinity: { choko: 0 } }
+                    ]
+                }
+            ],
+            choko_3_good: [
+                {
+                    speaker: "巧可",
+                    char: { pos: "center", id: "choko", expr: "smile" },
+                    text: "「ありがとうございます……！ 私の冷たかった心に、あなたのあたたかい甘さが溶けていくようです……♥」", sound: "heart" },
+                { text: "クールな風紀委員長が見せた最高に可愛い微笑みに胸が打ち抜かれた！", next: "festival_prep" }
+            ],
+            choko_3_bad: [
+                {
+                    speaker: "巧可",
+                    char: { pos: "center", id: "choko", expr: "normal" },
+                    text: "「ふふ、規律を守るあなたも素敵です。では、二人だけの秘密の特例としましょう。」" },
+                { text: "二人は静かにチョコチップアイスを分け合った。", next: "festival_prep" }
+            ],
+
+            // ==================================================
+            // --- ROUTE: ICHIKA (苺華・ストロベリー) --- 3-STEP ACQUAINTANCE
+            // ==================================================
+            ichika_step1: [
+                {
+                    speaker: "苺華",
+                    char: { pos: "center", id: "ichika", expr: "normal" },
+                    text: "「ようこそサロンへ。わたくし苺華・ストロベリーと申します。王道の果実感あふれる香り、楽しんでいってくださいね。」"
+                },
+                {
+                    speaker: "苺華",
+                    char: { pos: "center", id: "ichika", expr: "happy" },
+                    text: "「ふふ、王道と言われるのは少し照れますけれど……甘酸っぱい思い出、一緒に作っていただけますか？」",
+                    choices: [
+                        { text: "「喜んで！苺華さんの淹れたストロベリーティーは最高です」", next: "ichika_1_good", affinity: { ichika: 15 } },
+                        { text: "「王道すぎてちょっとベタな気もするけれど……」", next: "ichika_1_bad", affinity: { ichika: -5 } }
+                    ]
+                }
+            ],
+            ichika_1_good: [
+                {
+                    speaker: "苺華",
+                    char: { pos: "center", id: "ichika", expr: "happy" },
+                    text: "「まあ……嬉しい！あなた様になら、わたくしの特別なストロベリーレシピをお教えできますわ。」", sound: "heart" },
+                { next: "ichika_step2" }
+            ],
+            ichika_1_bad: [
+                {
+                    speaker: "苺華",
+                    char: { pos: "center", id: "ichika", expr: "normal" },
+                    text: "「あら……ベタ、ですか……。皆様に愛される王道を守るのも大変なのですけれど……。」" },
+                { next: "ichika_step2" }
+            ],
+
+            ichika_step2: [
+                {
+                    speaker: "苺華",
+                    char: { pos: "center", id: "ichika", expr: "normal" },
+                    text: "「数日後――学園の温室で、苺華が摘みたての完熟イチゴを選別していた。」"
+                },
+                {
+                    speaker: "苺華",
+                    char: { pos: "center", id: "ichika", expr: "happy" },
+                    text: "「ふふ、このイチゴ、真っ赤でとっても美味しそうでしょう？……あ～ん、して差し上げましょうか？」",
+                    choices: [
+                        { text: "「えっ！？じゃあお言葉に甘えて……あ～ん！」", next: "ichika_2_good", affinity: { ichika: 15 } },
+                        { text: "「お嬢様にそんなことをさせるなんて滅相もないです！」", next: "ichika_2_normal", affinity: { ichika: 5 } }
+                    ]
+                }
+            ],
+            ichika_2_good: [
+                {
+                    speaker: "苺華",
+                    char: { pos: "center", id: "ichika", expr: "happy" },
+                    text: "「はい、あ～ん♪ ……ふふっ、美味しいですか？あなた様の幸せそうな顔が見られて、わたくしも胸がいっぱいです。」", sound: "heart" },
+                { next: "ichika_step3" }
+            ],
+            ichika_2_normal: [
+                {
+                    speaker: "苺華",
+                    char: { pos: "center", id: "ichika", expr: "normal" },
+                    text: "「まあ、ご謙虚ですのね。でもわたくし、あなた様にはもっと甘えていただきたいのですけれど……。」" },
+                { next: "ichika_step3" }
+            ],
+
+            ichika_step3: [
+                {
+                    speaker: "苺華",
+                    char: { pos: "center", id: "ichika", expr: "normal" },
+                    text: "「学園祭前夜。キャンドルが灯るサロンで、苺華とお互いの夢について語り合った。」"
+                },
+                {
+                    speaker: "苺華",
+                    char: { pos: "center", id: "ichika", expr: "happy" },
+                    text: "「わたくし、ずっと誰もが笑顔になれる『一等賞のストロベリーサンデー』を作るのが夢でした。でも今のわたくしの夢は……あなた様と一緒に歩む未来です。」",
+                    choices: [
+                        { text: "「僕も苺華さんとずっと甘い時間を過ごしたいです」", next: "ichika_3_good", affinity: { ichika: 20 } },
+                        { text: "「素晴らしいストロベリーサンデーを明日作り上げましょう！」", next: "ichika_3_bad", affinity: { ichika: 0 } }
+                    ]
+                }
+            ],
+            ichika_3_good: [
+                {
+                    speaker: "苺華",
+                    char: { pos: "center", id: "ichika", expr: "happy" },
+                    text: "「まあ……！ 夢が叶いましたわ！世界で一番甘酸っぱくて幸せな恋の始まりですわね♥」", sound: "heart" },
+                { text: "苺華の気品あふれる笑みと温かい眼差しに、二人の心が完全に重なった。", next: "festival_prep" }
+            ],
+            ichika_3_bad: [
+                {
+                    speaker: "苺華",
+                    char: { pos: "center", id: "ichika", expr: "normal" },
+                    text: "「ええ、まずは明日の学園祭を成功させましょうね！」" },
+                { text: "意気込みを新たに、学園祭当日へ向かうのだった。", next: "festival_prep" }
+            ],
+
+            // ==================================================
+            // --- FESTIVAL PREP & FINALE ---
+            // ==================================================
+            festival_prep: [
+                { speaker: "ナレーション", text: "そして迎えた『サーティワン大感謝学園祭』当日！学園最高のフレーバーを決めるコンテストが開幕した。" },
+                {
+                    speaker: "彩葉",
+                    char: { pos: "center", id: "iroha", expr: "happy" },
+                    text: "「さあ！私たちの試作フレーバーを披露するときだよ！」"
+                },
+                {
+                    speaker: "ナレーション", text: "ここで最大の事件が発生！突然の雷雨で学園のメイン冷凍庫の電源がダウン！このままでは全生徒のアイスが溶けてしまう…！",
+                    choices: [
+                        { text: "【全員の力を合わせる】「ヒロイン達の特技を結集して氷を作ろう！」", next: "eval_ending", action: "unite" },
+                        { text: "【一人で解決しようとする】「俺が自家発電機を回し続ける！」", next: "eval_ending", action: "solo" },
+                        { text: "【パニックになって逃げ出す】「あわわわ！もうダメだ～逃げろ～！」", next: "eval_ending", action: "panic" }
+                    ]
+                }
+            ]
+        };
+
+        /* --------------------------------------------------
+           GAME STATE & ENGINE MANAGEMENT
+           -------------------------------------------------- */
+        let gameState = {
+            currentScene: "start",
+            sceneIndex: 0,
+            affinity: { iroha: 0, aine: 0, choko: 0, ichika: 0 },
+            logs: [],
+            isAuto: false,
+            isSkip: false,
+            isTyping: false
+        };
+
+        let typingTimer = null;
+        let autoTimer = null;
+
+        function stopAutoAndSkip() {
+            gameState.isAuto = false;
+            gameState.isSkip = false;
+            if (autoTimer) {
+                clearTimeout(autoTimer);
+                autoTimer = null;
+            }
+            const autoBtn = document.getElementById('auto-btn');
+            if (autoBtn) autoBtn.classList.remove('bg-31pink', 'text-white');
+            const skipBtn = document.getElementById('skip-btn');
+            if (skipBtn) skipBtn.classList.remove('bg-31blue', 'text-white');
+        }
+
+        function startGame() {
+            initAudio();
+            document.getElementById('title-screen').classList.add('hidden');
+            document.getElementById('ending-screen').classList.add('hidden');
+            document.getElementById('choices-container').classList.add('hidden');
+            stopAutoAndSkip();
+            gameState = {
+                currentScene: "start",
+                sceneIndex: 0,
+                affinity: { iroha: 0, aine: 0, choko: 0, ichika: 0 },
+                logs: [],
+                isAuto: false,
+                isSkip: false,
+                isTyping: false
+            };
+            renderScene();
+        }
+
+        function renderScene() {
+            const lines = SCENARIO[gameState.currentScene];
+            if (!lines || gameState.sceneIndex < 0 || gameState.sceneIndex >= lines.length) {
+                return;
+            }
+
+            const line = lines[gameState.sceneIndex];
+            if (!line) return;
+
+            // Sound
+            if (line.sound) playSE(line.sound);
+
+            // Background
+            if (line.bg) {
+                document.getElementById('bg-layer').className = `absolute inset-0 bg-cover bg-center transition-all duration-700 ${line.bg}`;
+            }
+
+            // Character Display
+            const leftEl = document.getElementById('char-left');
+            const centerEl = document.getElementById('char-center');
+            const rightEl = document.getElementById('char-right');
+
+            leftEl.innerHTML = ''; centerEl.innerHTML = ''; rightEl.innerHTML = '';
+            leftEl.classList.add('opacity-0'); centerEl.classList.add('opacity-0'); rightEl.classList.add('opacity-0');
+
+            if (line.char) {
+                const charData = CHARACTERS[line.char.id];
+                const svgHtml = charData ? charData.getSvg(line.char.expr) : '';
+                let targetEl = centerEl;
+                if (line.char.pos === 'left') targetEl = leftEl;
+                if (line.char.pos === 'right') targetEl = rightEl;
+
+                targetEl.innerHTML = svgHtml;
+                targetEl.classList.remove('opacity-0');
+            }
+
+            // Speaker Tag
+            const speakerTag = document.getElementById('speaker-tag');
+            const speakerName = document.getElementById('speaker-name');
+            speakerName.innerText = line.speaker || "？？？";
+
+            if (line.speaker === "主人公" || line.speaker === "ナレーション") {
+                speakerTag.classList.remove('from-31pink', 'to-pink-500');
+                speakerTag.classList.add('from-31blue', 'to-cyan-600');
+            } else {
+                speakerTag.classList.remove('from-31blue', 'to-cyan-600');
+                speakerTag.classList.add('from-31pink', 'to-pink-500');
+            }
+
+            // Dialogue Text Typing
+            const choicesContainer = document.getElementById('choices-container');
+            choicesContainer.classList.add('hidden');
+
+            // Log
+            if (line.text) {
+                gameState.logs.push(`${line.speaker || 'ナレーション'}: ${line.text}`);
+            }
+
+            typeWriter(line.text || '', () => {
+                if (line.choices) {
+                    stopAutoAndSkip();
+                    showChoices(line.choices);
+                } else if (gameState.isAuto || gameState.isSkip) {
+                    const delay = gameState.isSkip ? 150 : 1800;
+                    autoTimer = setTimeout(() => {
+                        nextDialogue();
+                    }, delay);
+                }
+            });
+        }
+
+        function typeWriter(text, callback) {
+            const textEl = document.getElementById('dialogue-text');
+            textEl.innerHTML = '';
+            let i = 0;
+            gameState.isTyping = true;
+            clearInterval(typingTimer);
+
+            const speed = gameState.isSkip ? 5 : 30;
+
+            typingTimer = setInterval(() => {
+                if (i < text.length) {
+                    textEl.innerHTML += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typingTimer);
+                    gameState.isTyping = false;
+                    if (callback) callback();
+                }
+            }, speed);
+        }
+
+        function handleDialogueClick() {
+            if (!document.getElementById('choices-container').classList.contains('hidden') ||
+                !document.getElementById('ending-screen').classList.contains('hidden') ||
+                !document.getElementById('saveload-modal').classList.contains('hidden') ||
+                !document.getElementById('log-modal').classList.contains('hidden') ||
+                !document.getElementById('affection-modal').classList.contains('hidden')) {
+                return;
+            }
+
+            const lines = SCENARIO[gameState.currentScene];
+            if (!lines || gameState.sceneIndex >= lines.length) {
+                return;
+            }
+
+            if (gameState.isTyping) {
+                clearInterval(typingTimer);
+                const line = lines[gameState.sceneIndex];
+                if (line) {
+                    document.getElementById('dialogue-text').innerHTML = line.text || '';
+                    gameState.isTyping = false;
+                    if (line.choices) {
+                        stopAutoAndSkip();
+                        showChoices(line.choices);
+                    } else if (gameState.isAuto || gameState.isSkip) {
+                        const delay = gameState.isSkip ? 150 : 1800;
+                        autoTimer = setTimeout(() => {
+                            nextDialogue();
+                        }, delay);
+                    }
+                }
+            } else {
+                nextDialogue();
+            }
+        }
+
+        function nextDialogue() {
+            if (autoTimer) {
+                clearTimeout(autoTimer);
+                autoTimer = null;
+            }
+
+            const lines = SCENARIO[gameState.currentScene];
+            if (!lines || gameState.sceneIndex >= lines.length) {
+                if (gameState.currentScene === "eval_ending") {
+                    evaluateEnding();
+                }
+                return;
+            }
+
+            const line = lines[gameState.sceneIndex];
+            if (!line) return;
+
+            if (line.choices && !document.getElementById('choices-container').classList.contains('hidden')) {
+                return;
+            }
+
+            if (line.next) {
+                if (line.next === "eval_ending") {
+                    evaluateEnding();
+                    return;
+                }
+                gameState.currentScene = line.next;
+                gameState.sceneIndex = 0;
+            } else {
+                gameState.sceneIndex++;
+            }
+
+            if (gameState.currentScene === "eval_ending") {
+                evaluateEnding();
+                return;
+            }
+
+            const currentLines = SCENARIO[gameState.currentScene];
+            if (currentLines && gameState.sceneIndex < currentLines.length) {
+                renderScene();
+            } else if (currentLines && gameState.sceneIndex >= currentLines.length) {
+                if (gameState.currentScene === "eval_ending") {
+                    evaluateEnding();
+                }
+            }
+        }
+
+        function showChoices(choices) {
+            const container = document.getElementById('choices-container');
+            const buttonsBox = document.getElementById('choice-buttons');
+            buttonsBox.innerHTML = '';
+
+            choices.forEach((c) => {
+                const btn = document.createElement('button');
+                btn.className = "btn-31 w-full py-3 px-6 text-white font-bold text-base sm:text-lg rounded-2xl text-left border-2 border-white transform hover:scale-102 transition shadow-lg";
+                btn.innerText = c.text;
+                btn.onclick = (e) => {
+                    e.stopPropagation();
+                    playSE('pop');
+                    spawnParticles();
+                    if (c.affinity) {
+                        for (let k in c.affinity) {
+                            gameState.affinity[k] = (gameState.affinity[k] || 0) + c.affinity[k];
+                        }
+                    }
+                    container.classList.add('hidden');
+                    if (c.action === 'panic') {
+                        triggerEnding('bad');
+                        return;
+                    }
+                    if (c.next) {
+                        if (c.next === "eval_ending") {
+                            evaluateEnding();
+                            return;
+                        }
+                        gameState.currentScene = c.next;
+                        gameState.sceneIndex = 0;
+                        renderScene();
+                    } else {
+                        gameState.sceneIndex++;
+                        renderScene();
+                    }
+                };
+                buttonsBox.appendChild(btn);
+            });
+
+            container.classList.remove('hidden');
+        }
+
+        /* --------------------------------------------------
+           ENDING EVALUATION SYSTEM
+           -------------------------------------------------- */
+        function evaluateEnding() {
+            stopAutoAndSkip();
+            const aff = gameState.affinity;
+            const maxAffinity = Math.max(aff.iroha, aff.aine, aff.choko, aff.ichika);
+            const totalAffinity = aff.iroha + aff.aine + aff.choko + aff.ichika;
+
+            if (totalAffinity >= 65) {
+                triggerEnding('best');
+            } else if (maxAffinity >= 40) {
+                let heroName = "彩葉";
+                if (maxAffinity === aff.aine) heroName = "愛音";
+                if (maxAffinity === aff.choko) heroName = "巧可";
+                if (maxAffinity === aff.ichika) heroName = "苺華";
+                triggerEnding('happy', heroName);
+            } else {
+                triggerEnding('normal');
+            }
+        }
+
+        function triggerEnding(type, heroineName = "") {
+            const modal = document.getElementById('ending-screen');
+            const badge = document.getElementById('ending-badge');
+            const title = document.getElementById('ending-title');
+            const desc = document.getElementById('ending-desc');
+            const icon = document.getElementById('ending-illustration');
+
+            modal.classList.remove('hidden');
+
+            if (type === 'best') {
+                badge.className = "px-4 py-1 bg-yellow-400 text-gray-900 font-black rounded-full text-xs sm:text-sm mb-3";
+                badge.innerText = "★ BEST ENDING ★";
+                title.innerText = "サーティワン・オールスターズ！";
+                icon.innerHTML = '<i class="fa-solid fa-crown text-yellow-300"></i>';
+                desc.innerText = "ヒロイン全員との強い絆で見事なハーモニーを生み出し、伝説の限定フレーバー『サーティワン・ラブ・シャワー』が完成！学園祭は大盛況となり、正体がバレてもあなたは学園の『名誉アイスマスター』としてみんなから永久に愛されることになりました！";
+                playSE('heart');
+            } else if (type === 'happy') {
+                badge.className = "px-4 py-1 bg-31pink text-white font-black rounded-full text-xs sm:text-sm mb-3";
+                badge.innerText = "♥ HAPPY ENDING ♥";
+                title.innerText = `${heroineName}と紡ぐ甘い誓い`;
+                icon.innerHTML = '<i class="fa-solid fa-heart text-31pink"></i>';
+                desc.innerText = `数々の危機を共に乗り越えた学園祭の後、夕暮れの校舎裏で${heroineName}から胸キュン必至の告白を受けました！「これからはずっと、私だけの特別なフレーバーでいてね……♥」`;
+                playSE('heart');
+            } else if (type === 'normal') {
+                badge.className = "px-4 py-1 bg-31blue text-white font-black rounded-full text-xs sm:text-sm mb-3";
+                badge.innerText = "♪ NORMAL ENDING ♪";
+                title.innerText = "平和で美味しい学園生活";
+                icon.innerHTML = '<i class="fa-solid fa-ice-cream text-31blue"></i>';
+                desc.innerText = "学園祭は無事に終了。特別な深い恋には発展しなかったものの、あなたは優秀な研究員として甘く賑やかな学園生活をこれからも続けていくのでした。";
+                playSE('click');
+            } else if (type === 'bad') {
+                badge.className = "px-4 py-1 bg-purple-600 text-white font-black rounded-full text-xs sm:text-sm mb-3";
+                badge.innerText = "✖ BAD ENDING ✖";
+                title.innerText = "パニック＆溶けたアイスの惨劇";
+                icon.innerHTML = '<i class="fa-solid fa-skull-crossbones text-purple-400"></i>';
+                desc.innerText = "パニックになって逃げ出したあなたの正体が男子生徒だと即バレ！激怒した風紀委員長と学園の乙女たちによって『極寒トリプルスクープの刑』に処され、即日退学となってしまいました……。";
+                playSE('bad');
+            }
+        }
+
+        function returnToTitle() {
+            document.getElementById('ending-screen').classList.add('hidden');
+            document.getElementById('title-screen').classList.remove('hidden');
+        }
+
+        /* --------------------------------------------------
+           PARTICLE EFFECTS & CONTROLS
+           -------------------------------------------------- */
+        function spawnParticles() {
+            const container = document.getElementById('particle-layer');
+            const colors = ['#ff4d8d', '#00b2e3', '#a2e8dd', '#ffe66d', '#ff70a6'];
+
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'pop-particle';
+                const size = Math.random() * 16 + 8;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.borderRadius = '50%';
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+
+                container.appendChild(particle);
+                setTimeout(() => particle.remove(), 800);
+            }
+        }
+
+        function toggleAuto() {
+            gameState.isAuto = !gameState.isAuto;
+            const btn = document.getElementById('auto-btn');
+            if (gameState.isAuto) {
+                btn.classList.add('bg-31pink', 'text-white');
+                nextDialogue();
+            } else {
+                btn.classList.remove('bg-31pink', 'text-white');
+            }
+        }
+
+        function toggleSkip() {
+            gameState.isSkip = !gameState.isSkip;
+            const btn = document.getElementById('skip-btn');
+            if (gameState.isSkip) {
+                btn.classList.add('bg-31blue', 'text-white');
+                nextDialogue();
+            } else {
+                btn.classList.remove('bg-31blue', 'text-white');
+            }
+        }
+
+        /* --------------------------------------------------
+           MODAL LOGIC
+           -------------------------------------------------- */
+        function toggleAffectionModal() {
+            const modal = document.getElementById('affection-modal');
+            const list = document.getElementById('affection-list');
+
+            if (modal.classList.contains('hidden')) {
+                list.innerHTML = '';
+                for (let k in CHARACTERS) {
+                    const char = CHARACTERS[k];
+                    const val = gameState.affinity[k] || 0;
+                    const item = document.createElement('div');
+                    item.className = "flex items-center gap-3 p-3 bg-pink-50 rounded-2xl border border-pink-200";
+                    item.innerHTML = `
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background-color: ${char.color}">
+                            <i class="fa-solid ${char.icon}"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between font-bold text-sm">
+                                <span>${char.name}</span>
+                                <span style="color: ${char.color}">${val} pt</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-3 mt-1 overflow-hidden">
+                                <div class="h-full rounded-full transition-all duration-500" style="width: ${Math.min(val * 2, 100)}%; background-color: ${char.color}"></div>
+                            </div>
+                        </div>
+                    `;
+                    list.appendChild(item);
+                }
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function openLogModal() {
+            const modal = document.getElementById('log-modal');
+            const content = document.getElementById('log-content');
+            content.innerHTML = '';
+            gameState.logs.forEach(line => {
+                const p = document.createElement('p');
+                p.className = "p-2 bg-gray-50 rounded-lg border border-gray-100 text-gray-700";
+                p.innerText = line;
+                content.appendChild(p);
+            });
+            content.scrollTop = content.scrollHeight;
+            modal.classList.remove('hidden');
+        }
+
+        function closeLogModal() {
+            document.getElementById('log-modal').classList.add('hidden');
+        }
+
+        function openSaveModal(isLoadOnly = false) {
+            const modal = document.getElementById('saveload-modal');
+            const slotsContainer = document.getElementById('save-slots');
+            document.getElementById('saveload-title').innerText = isLoadOnly ? "ロード" : "セーブ / ロード";
+            slotsContainer.innerHTML = '';
+
+            for (let i = 1; i <= 3; i++) {
+                const key = `31love_save_${i}`;
+                const savedData = localStorage.getItem(key);
+                const slot = document.createElement('div');
+                slot.className = "flex items-center justify-between p-3 bg-purple-50 rounded-2xl border border-purple-200 text-sm font-bold";
+
+                if (savedData) {
+                    const parsed = JSON.parse(savedData);
+                    slot.innerHTML = `
+                        <div>
+                            <span class="text-31purple font-black">SLOT ${i}</span>
+                            <span class="text-xs text-gray-500 ml-2">${parsed.date}</span>
+                            <div class="text-xs text-gray-700 truncate max-w-[200px]">${parsed.scene}</div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="loadGame(${i})" class="px-3 py-1 bg-31blue text-white rounded-lg text-xs shadow">ロード</button>
+                            ${!isLoadOnly ? `<button onclick="saveGame(${i})" class="px-3 py-1 bg-31pink text-white rounded-lg text-xs shadow">上書き</button>` : ''}
+                        </div>
+                    `;
+                } else {
+                    slot.innerHTML = `
+                        <span class="text-gray-400">SLOT ${i} - NO DATA</span>
+                        <div>
+                            ${!isLoadOnly ? `<button onclick="saveGame(${i})" class="px-3 py-1 bg-31pink text-white rounded-lg text-xs shadow">セーブ</button>` : ''}
+                        </div>
+                    `;
+                }
+                slotsContainer.appendChild(slot);
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeSaveModal() {
+            document.getElementById('saveload-modal').classList.add('hidden');
+        }
+
+        function saveGame(slot) {
+            const data = {
+                date: new Date().toLocaleString(),
+                scene: gameState.currentScene,
+                sceneIndex: gameState.sceneIndex,
+                affinity: gameState.affinity,
+                logs: gameState.logs
+            };
+            localStorage.setItem(`31love_save_${slot}`, JSON.stringify(data));
+            playSE('click');
+            openSaveModal();
+        }
+
+        function loadGame(slot) {
+            const saved = localStorage.getItem(`31love_save_${slot}`);
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                gameState.currentScene = parsed.scene;
+                gameState.sceneIndex = parsed.sceneIndex;
+                gameState.affinity = parsed.affinity;
+                gameState.logs = parsed.logs || [];
+                closeSaveModal();
+                document.getElementById('title-screen').classList.add('hidden');
+                renderScene();
+                playSE('click');
+            }
+        }
+    </script>
+</body>
+</html>
